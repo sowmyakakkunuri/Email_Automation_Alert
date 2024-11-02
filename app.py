@@ -1,12 +1,17 @@
 
 from flask import Flask, request, jsonify, redirect, url_for, session
+import re
 import os
 import base64
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from deadline import start_fetching_deadline
+
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Allows HTTP for OAuth
+
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -32,6 +37,7 @@ def login():
         scopes=SCOPES,
         redirect_uri='http://localhost:8080/callback'  # Set your redirect URI
     )
+   
     authorization_url, state = flow.authorization_url(access_type='offline')
     session['state'] = state
     return redirect(authorization_url)
@@ -57,7 +63,7 @@ def read_emails():
     credentials = Credentials(**credentials)
     service = build('gmail', 'v1', credentials=credentials)
 
-    results = service.users().messages().list(userId='me', maxResults=20).execute()
+    results = service.users().messages().list(userId='me', maxResults=8).execute()
     messages = results.get('messages', [])
     email_list = []
     
@@ -77,6 +83,7 @@ def read_emails():
                 body = payload['body']['data']
             
             body = base64.urlsafe_b64decode(body).decode('utf-8')
+            body = re.sub(r'http\S+', '', body)  # remove URLs
             subject = next((header['value'] for header in headers if header['name'] == 'Subject'), 'No Subject')
 
             email_list.append({
@@ -85,9 +92,18 @@ def read_emails():
                 'body': body,
                 'snippet': msg['snippet']
             })
+            email_list[0] = {
+                'id': message['id'],
+                'subject': "hackothan that is beign conducted in kmit college",
+                'body': "hello dear user, you are a registered contestant for the hackathon that is being conducted in kmit and to participate you must pay the registration fee by 3-11-2024",
+                'snippet': msg['snippet']
+            }
     
-    return jsonify(email_list)
+    return jsonify(start_fetching_deadline(email_list))
 
+
+
+    
 @app.route('/user_info')
 def user_info():
     """Fetch and display user's profile and email information."""
