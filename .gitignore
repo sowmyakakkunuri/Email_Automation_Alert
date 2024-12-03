@@ -4,3 +4,6 @@ venv/
 
 .env
 
+Email-Auto-SysKey.pem
+
+*.pem
