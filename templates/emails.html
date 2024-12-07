@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emails</title>
+  </head>
+  <body>
+    <h1>Email List</h1>
+    {% for email in emails %}
+    <div>
+      <h3>Subject: {{ email['subject'] }}</h3>
+      <p>Body: {{ email['body'] }}</p>
+      <p>email id: {{ email['id'] }}</p>
+      <form
+        action="{{ url_for('email_content', email_id=email['id']) }}"
+        method="GET"
+      >
+        <button type="submit">View</button>
+      </form>
+    </div>
+    <hr />
+    {% endfor %}
+  </body>
+</html>

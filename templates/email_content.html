@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Content</title>
+  </head>
+  <body>
+    <h1>Email Details</h1>
+    <h3>Subject: {{ email['subject'] }}</h3>
+    <p>Body: {{ email['body'] }}</p>
+
+    {% if summary %}
+    <h3>Summary:</h3>
+    <p>{{ summary }}</p>
+    {% endif %} {% if reply %}
+    <h3>Auto Reply:</h3>
+    <p>{{ reply }}</p>
+    {% endif %}
+
+    <form
+      action="{{ url_for('email_summarizer', email_id=email['id']) }}"
+      method="POST"
+    >
+      <button type="submit">Summarize</button>
+    </form>
+    <br />
+    <form
+      action="{{ url_for('auto_reply', email_id=email['id']) }}"
+      method="POST"
+    >
+      <button type="submit">Auto Reply</button>
+    </form>
+  </body>
+</html>
