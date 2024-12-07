@@ -1,6 +1,10 @@
 credentials.json
-
+credentials2.json
 venv/
 
 .env
+
+Email-Auto-SysKey.pem
+
+*.pem
 
